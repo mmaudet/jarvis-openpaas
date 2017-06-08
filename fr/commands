@@ -1,0 +1,4 @@
+*PROCHAIN*RENDEZ-VOUS*|*PROCHAINE*REUNION*==jv_pg_op_nextMeeting
+*PREND*RENDEZ-VOUS (*)*==say "Sujet?"
+>(*)==jv_pg_op_createMeeting "(1)" "(2)" && say "C'est fait"
+

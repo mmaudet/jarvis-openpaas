@@ -10,13 +10,13 @@ For multi-language plugin:
 - optionally write the Description / Usage sections in several languages
 -->
 ## Description
-Description of your Plugin
+Allows calling the OpenPaaS API to make Jarvis list your meetings, read your messages, etc.
 
 ## Usage
 ```
-You: example of how to trigger the command
-Jarvis: output from Jarvis
+You: Quel est mon prochain rendez-vous ?
+Jarvis: Votre prochain rendez-vous est "Réunion" vendredi 9 juin 2017 15:00 à Lyon
 ```
 
 ## Author
-[your name](http://your.website)
+[Linagora](http://open-paas.org)
