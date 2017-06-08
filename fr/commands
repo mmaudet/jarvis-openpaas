@@ -1,4 +1,5 @@
-*PROCHAIN*RENDEZ-VOUS*|*PROCHAINE*REUNION*==jv_pg_op_nextMeeting
-*PREND*RENDEZ-VOUS (*)*==say "Sujet?"
->(*)==jv_pg_op_createMeeting "(1)" "(2)" && say "C'est fait"
+*PROCHAIN*RENDEZ-VOUS*|*PROCHAINE*REUNION*==say "Votre prochain rendez-vous: $(jv_pg_op_nextMeeting)"
 
+*RENDEZ-VOUS (*)*==jv_pg_op_createMeeting_when="(1)" && say "Sujet?"
+>(*)==jv_pg_op_createMeeting_summary="(1)" && say "Lieu?"
+>>(*)==jv_pg_op_createMeeting_location="(1)" && jv_pg_op_createMeeting && say "C'est fait"
