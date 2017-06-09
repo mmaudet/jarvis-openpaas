@@ -6,5 +6,5 @@
 >(*)==jv_pg_op_createMeeting_summary="(1)" && say "Lieu?"
 >>(*)==jv_pg_op_createMeeting_location="(1)" && jv_pg_op_createMeeting
 
-*MAIL DE (*)*==jv_pg_op_getContactEmailAddress "(1)" ""
 *MAIL DE (*) (*)*==jv_pg_op_getContactEmailAddress "(1)" "(2)"
+*MAIL DE (*)*==jv_pg_op_getContactEmailAddress "(1)"

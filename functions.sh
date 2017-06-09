@@ -1,75 +1,85 @@
 #!/usr/bin/env bash
 
 jv_pg_op_nextMeeting() {
-    local sc=$(
-        curl    -sq \
-                -u"${jv_pg_op_username}:${jv_pg_op_password}" \
-                -H"Accept-Language: fr" \
-                -o ${jv_pg_op_tmp} \
-                -w "%{http_code}" \
-                ${jv_pg_op_url}/calendar/api/events/next/text
-    )
+    local sc=$(jv_pg_op_curl GET /calendar/api/events/next "" text/plain)
 
     case "${sc}" in
-        "200") say "Votre prochain rendez-vous: $(cat ${jv_pg_op_tmp})";;
+        "200") say "Votre prochain rendez-vous, $(cat ${jv_pg_op_tmp})";;
         "404") say "Vous n'avez pas de prochain rendez-vous";;
-        *) say "Erreur"
+        *) say "${phrase_failed}"
     esac
 }
 
 jv_pg_op_cancelNextMeeting() {
-    local sc=$(
-        curl    -sq \
-                -u"${jv_pg_op_username}:${jv_pg_op_password}" \
-                -XDELETE \
-                -H"Accept-Language: fr" \
-                -o ${jv_pg_op_tmp} \
-                -w "%{http_code}" \
-                ${jv_pg_op_url}/calendar/api/events/next
-    )
+    local sc=$(jv_pg_op_curl DELETE /calendar/api/events/next)
 
     case "${sc}" in
-        "204") jv_pg_op_done;;
+        "200") jv_pg_op_done;;
         "404") say "Vous n'avez pas de prochain rendez-vous";;
-        *) say "Erreur"
+        *) say "${phrase_failed}"
     esac
 }
 
 jv_pg_op_createMeeting() {
-    curl    -sq \
-            -u"${jv_pg_op_username}:${jv_pg_op_password}" \
-            -XPOST \
-            -H"Accept-Language: fr" \
-            -H"Content-Type: application/json" \
-            -d"{
-                \"summary\": \"${jv_pg_op_createMeeting_summary}\",
-                \"location\": \"${jv_pg_op_createMeeting_location}\",
-                \"when\": \"${jv_pg_op_createMeeting_when}\"
-            }" \
-            ${jv_pg_op_url}/calendar/api/events
+    local sc=$(jv_pg_op_curl POST /calendar/api/events "$(jv_pg_op_createMeeting_data)")
 
-    jv_pg_op_done
+    case "${sc}" in
+        "200") jv_pg_op_done;;
+        *) say "${phrase_failed}"
+    esac
+}
+
+function jv_pg_op_createMeeting_data() {
+  cat <<EOF
+{
+  "summary": "${jv_pg_op_createMeeting_summary}",
+  "location": "${jv_pg_op_createMeeting_location}",
+  "when": "${jv_pg_op_createMeeting_when}"
+}
+EOF
 }
 
 jv_pg_op_getContactEmailAddress() {
-    local sc=$(jv_pg_op_searchContacts ${*})
+    local pattern=${1}; [[ ! -z ${2} ]] && pattern="${pattern}+${2}"
+    local sc=$(jv_pg_op_curl GET "/contact/api/contacts/search?q=${pattern}")
 
     case "${sc}" in
         "200") say "$(cat ${jv_pg_op_tmp} | jq '.[] | (.fn + ", " + .emails[].value)')";;
         "204") say "Je ne trouve personne de ce nom";;
-        *) say "Erreur"
+        *) say "${phrase_failed}"
     esac
-}
-
-jv_pg_op_searchContacts() {
-    curl    -sq \
-            -u"${jv_pg_op_username}:${jv_pg_op_password}" \
-            -H"Accept-Language: fr" \
-            -o ${jv_pg_op_tmp} \
-            -w "%{http_code}" \
-            ${jv_pg_op_url}/contact/api/contacts/search?q=${1}+${2}
 }
 
 function jv_pg_op_done() {
     say "C'est fait"
+}
+
+function jv_pg_op_curl() {
+	local method=${1}
+	local url=${jv_pg_op_url}${2}
+	local data=${3}
+	local accept=${4}; [[ -z ${accept} ]] && accept=*/*
+
+	if [[ -z ${data} ]]
+	then
+		curl    -sq \
+		        -u"${jv_pg_op_username}:${jv_pg_op_password}" \
+		        -o"${jv_pg_op_tmp}" \
+		        -w"%{http_code}" \
+		        -H"Accept-Language: ${language:0:2}" \
+		        -H"Accept: ${accept}" \
+		        -X${method} \
+		        ${url}
+	else
+		curl    -sq \
+		        -u"${jv_pg_op_username}:${jv_pg_op_password}" \
+		        -o"${jv_pg_op_tmp}" \
+		        -w"%{http_code}" \
+		        -H"Accept-Language: ${language:0:2}" \
+		        -H"Accept: ${accept}" \
+		        -H"Content-Type: application/json" \
+		        -d"${data}" \
+		        -X${method} \
+		        ${url}
+	fi
 }
