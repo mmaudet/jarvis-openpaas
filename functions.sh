@@ -63,18 +63,18 @@ function jv_pg_op_curl() {
 	if [[ -z ${data} ]]
 	then
 		curl    -sq \
-		        -u"${jv_pg_op_username}:${jv_pg_op_password}" \
 		        -o"${jv_pg_op_tmp}" \
 		        -w"%{http_code}" \
+		        -H"Authorization: Bearer ${jv_pg_op_token}" \
 		        -H"Accept-Language: ${language:0:2}" \
 		        -H"Accept: ${accept}" \
 		        -X${method} \
 		        ${url}
 	else
 		curl    -sq \
-		        -u"${jv_pg_op_username}:${jv_pg_op_password}" \
 		        -o"${jv_pg_op_tmp}" \
 		        -w"%{http_code}" \
+		        -H"Authorization: Bearer ${jv_pg_op_token}" \
 		        -H"Accept-Language: ${language:0:2}" \
 		        -H"Accept: ${accept}" \
 		        -H"Content-Type: application/json" \
