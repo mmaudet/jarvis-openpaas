@@ -39,7 +39,7 @@ function jv_pg_op_createMeeting_data() {
 EOF
 }
 
-jv_pg_op_getContactEmailAddress() {
+function jv_pg_op_getContactEmailAddress() {
     local pattern=${1}; [[ ! -z ${2} ]] && pattern="${pattern}+${2}"
     local sc=$(jv_pg_op_curl GET "/contact/api/contacts/search?q=${pattern}")
 
@@ -48,6 +48,17 @@ jv_pg_op_getContactEmailAddress() {
         "204") say "Je ne trouve personne de ce nom";;
         *) say "${phrase_failed}"
     esac
+}
+
+function jv_pg_op_startHublin() {
+    chromium-browser --kiosk "${jv_pg_op_hublin}/${jv_pg_op_hublinConference}?displayName=${jv_pg_op_hublinDisplayName}&autostart=true&noAutoInvite=true" &
+    jv_pg_op_hublinPid=$!
+
+    say "Démarrage de la visio"
+}
+
+function jv_pg_op_closeHublin() {
+    [[ -z ${jv_pg_op_hublinPid} ]] && say "Aucune conference en cours" || kill ${jv_pg_op_hublinPid} && unset jv_pg_op_hublinPid
 }
 
 function jv_pg_op_done() {

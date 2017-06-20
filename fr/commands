@@ -8,3 +8,6 @@
 
 *MAIL DE (*) (*)*==jv_pg_op_getContactEmailAddress "(1)" "(2)"
 *MAIL DE (*)*==jv_pg_op_getContactEmailAddress "(1)"
+
+*DEMARRE*VISIO*|*OUVRE*VISIO*|*LANCE*VISIO*==jv_pg_op_startHublin
+*FERME*VISIO*|*TERMINE*VISIO*==jv_pg_op_closeHublin
