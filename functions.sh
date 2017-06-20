@@ -4,8 +4,8 @@ jv_pg_op_nextMeeting() {
     local sc=$(jv_pg_op_curl GET /calendar/api/events/next "" text/plain)
 
     case "${sc}" in
-        "200") say "Votre prochain rendez-vous, $(cat ${jv_pg_op_tmp})";;
-        "404") say "Vous n'avez pas de prochain rendez-vous";;
+        "200") say "$(jv_pg_op_i18n NEXT_MEETING), $(cat ${jv_pg_op_tmp})";;
+        "404") say "$(jv_pg_op_i18n NO_NEXT_MEETING)";;
         *) say "${phrase_failed}"
     esac
 }
@@ -15,7 +15,7 @@ jv_pg_op_cancelNextMeeting() {
 
     case "${sc}" in
         "200") jv_pg_op_done;;
-        "404") say "Vous n'avez pas de prochain rendez-vous";;
+        "404") say "$(jv_pg_op_i18n NO_NEXT_MEETING)";;
         *) say "${phrase_failed}"
     esac
 }
@@ -45,7 +45,7 @@ function jv_pg_op_getContactEmailAddress() {
 
     case "${sc}" in
         "200") say "$(cat ${jv_pg_op_tmp} | jq '.[] | (.fn + ", " + .emails[].value)')";;
-        "204") say "Je ne trouve personne de ce nom";;
+        "204") say "$(jv_pg_op_i18n NO_CONTACT_FOUND)";;
         *) say "${phrase_failed}"
     esac
 }
@@ -54,15 +54,15 @@ function jv_pg_op_startHublin() {
     chromium-browser --kiosk "${jv_pg_op_hublin}/${jv_pg_op_hublinConference}?displayName=${jv_pg_op_hublinDisplayName}&autostart=true&noAutoInvite=true" &
     jv_pg_op_hublinPid=$!
 
-    say "Démarrage de la visio"
+    say "$(jv_pg_op_i18n STARTING_CONFERENCE)"
 }
 
 function jv_pg_op_closeHublin() {
-    [[ -z ${jv_pg_op_hublinPid} ]] && say "Aucune conference en cours" || kill ${jv_pg_op_hublinPid} && unset jv_pg_op_hublinPid
+    [[ -z ${jv_pg_op_hublinPid} ]] && say "$(jv_pg_op_i18n NO_CONFERENCE)" || kill ${jv_pg_op_hublinPid} && unset jv_pg_op_hublinPid
 }
 
 function jv_pg_op_done() {
-    say "C'est fait"
+    say "$(jv_pg_op_i18n DONE)"
 }
 
 function jv_pg_op_curl() {
