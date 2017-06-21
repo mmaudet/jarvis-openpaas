@@ -62,12 +62,63 @@ function jv_pg_op_closeHublin() {
 }
 
 function jv_pg_op_getUnreadMessagesCount() {
-    local sc=$(jv_pg_op_jmap "getMailboxes" "{ \"ids\": [\"${jv_pg_op_inboxId}\"] }")
+    local sc=$(jv_pg_op_jmap "getMailboxes" "$(jv_pg_op_getUnreadMessagesCount_data)")
 
     case "${sc}" in
         "200") say "$(cat ${jv_pg_op_tmp} | jq '.[0][1].list[0].unreadMessages')";;
         *) say "${phrase_failed}"
     esac
+}
+
+function jv_pg_op_getUnreadMessagesCount_data() {
+cat <<EOF
+{
+  "ids": [
+    "${jv_pg_op_inboxId}"
+  ]
+}
+EOF
+}
+
+function jv_pg_op_getFirstMessageDetails() {
+    local sc=$(jv_pg_op_jmap "getMessageList" "$(jv_pg_op_getFirstMessageDetails_data)")
+
+    case "${sc}" in
+        "200")
+            local subject="$(cat ${jv_pg_op_tmp} | jq -r '.[1][1].list[0].subject')"
+            local from="$(cat ${jv_pg_op_tmp} | jq -r '.[1][1].list[0].from.name')"
+            local date=$(date --date="$(cat ${jv_pg_op_tmp} | jq -r '.[1][1].list[0].date')" "+%A %d %b %Y %H:%M")
+
+            say "${date}. De ${from}"
+            say "${subject}"
+            ;;
+        *) say "${phrase_failed}"
+    esac
+}
+
+function jv_pg_op_getFirstMessageDetails_data() {
+cat <<EOF
+{
+  "fetchMessages": true,
+  "fetchMessageProperties": [
+    "id",
+    "subject",
+    "from",
+    "preview",
+    "date"
+  ],
+  "sort": [
+    "date desc"
+  ],
+  "position": 0,
+  "limit": 1,
+  "filter": {
+    "inMailboxes": [
+      "${jv_pg_op_inboxId}"
+    ]
+  }
+}
+EOF
 }
 
 function jv_pg_op_done() {
@@ -118,7 +169,7 @@ function jv_pg_op_jmap_data() {
 
 cat <<EOF
 [
-    ["${command}", ${options}, "#0"]
+  ["${command}", ${options}, "#0"]
 ]
 EOF
 }
