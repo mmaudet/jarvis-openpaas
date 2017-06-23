@@ -11,6 +11,7 @@ For multi-language plugin:
 -->
 ## Description
 Allows calling the OpenPaaS (https://www.open-paas.org/) API to make Jarvis list your meetings, read your messages, etc...
+
 OpenPaaS is a reliable social platform in the cloud, built to encourage collaboration and teamwork inside an easy and great user experience.
 
 ## Usage
