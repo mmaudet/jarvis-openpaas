@@ -10,10 +10,26 @@ For multi-language plugin:
 - optionally write the Description / Usage sections in several languages
 -->
 ## Description
-Allows calling the OpenPaaS API to make Jarvis list your meetings, read your messages, etc.
+Allows calling the OpenPaaS (https://www.open-paas.org/) API to make Jarvis list your meetings, read your messages, etc...
+OpenPaaS is a reliable social platform in the cloud, built to encourage collaboration and teamwork inside an easy and great user experience.
 
 ## Usage
 ```
+You: Quel est mon prochain rendez-vous ?
+Jarvis: Votre prochain rendez-vous est "Réunion" vendredi 9 juin 2017 15:00 à Lyon
+
+You: Prends moi un rendez vous demain à 9h ?
+Jarvis: Sujet ?
+You: Déjeuner avec David
+Jarvis: Lieu ?
+You: Paris
+
+You: Combien j'ai de messages non lus ?
+Jarvis: XXXXX
+You : Quel est mon dernier message ?
+Jarvis: Votre dernier message est : ....
+
+
 You: Quel est mon prochain rendez-vous ?
 Jarvis: Votre prochain rendez-vous est "Réunion" vendredi 9 juin 2017 15:00 à Lyon
 ```
